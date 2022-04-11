@@ -24,8 +24,10 @@ def main(argv):
     parser.add_argument('--m', dest='model_path', type=str, help='path to directory containing pretrained ExSTraCS Models labeled ExStraCS_CV')
     parser.add_argument('--o', dest='output_path', type=str, help='path to output directory')
     parser.add_argument('--e', dest='experiment_name', type=str, help='name of experiment (no spaces)')
-
-    parser.add_argument('--class', dest='class_label', type=str, default="Class")
+    
+    #update to time and status instead of just "class"
+    parser.add_argument('--time', dest='time_label', type=str, default="eventTime")
+    parser.add_argument('--status',dest='status_label', type=str, default="eventStatus")
     parser.add_argument('--inst', dest='instance_label', type=str, default="None")
 
     parser.add_argument('--cv', dest='cv_partitions', type=int, help='number of CV partitions', default=3)
@@ -159,19 +161,21 @@ def main(argv):
         
         #Need this to drop both the eventTime and eventStatus columns. Is train_/test_data_phenotypes used again for anything?
         train_data_features = train_dfs[cv].drop(class_label, axis=1).values
-        train_data_phenotypes = train_dfs[cv][class_label].values
+        train_data_times = train_dfs[cv][time_label].values
+        train_data_statuses = train_dfs[cv][status_label].values
         train_instance_labels = train_dfs[cv].index.get_level_values(use_inst_label).tolist()
         train_group_labels = train_dfs[cv].index.get_level_values(use_group_label).tolist()
 
         test_data_features = test_dfs[cv].drop(class_label, axis=1).values
-        test_data_phenotypes = test_dfs[cv][class_label].values
+        test_data_times = test_dfs[cv][time_label].values
+        test_data_statuses = test_dfs[cv][status_label].values
         test_instance_labels = test_dfs[cv].index.get_level_values(use_inst_label).tolist()
         test_group_labels = test_dfs[cv].index.get_level_values(use_group_label).tolist()
         cv_header_save = np.array(list(train_dfs[cv].drop(class_label, axis=1).columns))
 
         cv_info.append(
-            [train_data_features, train_data_phenotypes, train_instance_labels, train_group_labels, test_data_features,
-             test_data_phenotypes, test_instance_labels, test_group_labels, use_inst_label, use_group_label,cv_header_save])
+            [train_data_features, train_data_times, train_data_statuses, train_instance_labels, train_group_labels, test_data_features,
+             test_data_times, test_data_statuses, test_instance_labels, test_group_labels, use_inst_label, use_group_label,cv_header_save])
         tt_inst += train_instance_labels
 
     # Find Maximal Data Headers across all CVs
@@ -194,9 +198,11 @@ def main(argv):
                 data_features[feature_name] = full[feature_name]
     data_features = data_features.values
 
-    # Get data phenotypes, instance labels, group labels
+    # Get data times, statuses, instance labels, group labels
     full_df = pd.concat([train_dfs[0],test_dfs[0]])
-    data_phenotypes = full_df[class_label].values
+    data_times = full_df[time_label].values
+    data_statuses = full_df[status_label].values
+    
     full_instance_labels = full_df.index.get_level_values(use_inst_label).tolist()
     full_group_labels = full_df.index.get_level_values(use_group_label).tolist()
 
@@ -207,7 +213,7 @@ def main(argv):
         group_colors[group_name] = random_color
 
     # Export
-    full_info = [data_features,data_phenotypes,data_headers,full_instance_labels,full_group_labels,group_colors]
+    full_info = [data_features,data_times, data_statuses,data_headers,full_instance_labels,full_group_labels,group_colors]
     phase1_pickle = [cv_info, full_info, visualize_true_clusters,'0','0','0','0',random_state,class_label,cv_count,'0','0',model_path]
     outfile = open(experiment_path+'/phase1pickle', 'wb')
     pickle.dump(phase1_pickle, outfile)
