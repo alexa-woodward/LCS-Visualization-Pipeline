@@ -214,7 +214,7 @@ def main(argv):
 
     # Export
     full_info = [data_features,data_times, data_statuses,data_headers,full_instance_labels,full_group_labels,group_colors]
-    phase1_pickle = [cv_info, full_info, visualize_true_clusters,'0','0','0','0',random_state,class_label,cv_count,'0','0',model_path]
+    phase1_pickle = [cv_info, full_info, visualize_true_clusters,'0','0','0','0',random_state,time_label,status_label,cv_count,'0','0',model_path]
     outfile = open(experiment_path+'/phase1pickle', 'wb')
     pickle.dump(phase1_pickle, outfile)
     outfile.close()
