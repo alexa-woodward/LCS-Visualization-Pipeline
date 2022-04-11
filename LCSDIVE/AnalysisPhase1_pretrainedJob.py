@@ -43,8 +43,9 @@ def job(experiment_path,cv):
     outfile.close()
 
     # Export Testing Accuracy for each instance
-    predicted_data_phenotypes = model.predict(test_data_features)
-    equality = np.equal(predicted_data_phenotypes, test_data_phenotypes)
+    predicted_data_eventTimes = model.predict(test_data_features)
+    #still editing
+    brier = np.equal(predicted_data_phenotypes, test_data_phenotypes)
     with open(experiment_path + '/CV_' + str(cv) + '/instTestingAccuracy.csv', mode='w') as file:
         writer = csv.writer(file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
         writer.writerow([inst_label, 'isCorrect'])
