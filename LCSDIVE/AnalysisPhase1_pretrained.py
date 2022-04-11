@@ -172,6 +172,20 @@ def main(argv):
         test_instance_labels = test_dfs[cv].index.get_level_values(use_inst_label).tolist()
         test_group_labels = test_dfs[cv].index.get_level_values(use_group_label).tolist()
         cv_header_save = np.array(list(train_dfs[cv].drop(class_label, axis=1).columns))
+        
+        #still working on the next few lines
+        dataEvents = train_dfs[cv][[timeLabel,censorLabel]]
+        
+        dataEvents[censorLabel] = dataEvents[censorLabel].astype(bool)
+        dataEvents = dataEvents.values
+        dataEvents_train[:, [1, 0]] = dataEvents_train[:, [0, 1]]
+        dataEvents_test[:, [1, 0]] = dataEvents_test[:, [0, 1]]
+
+        dataEvents_train = np.core.records.fromarrays(dataEvents_train.transpose(),names='cens, time', formats = '?, <f8')
+        dataEvents_test = np.core.records.fromarrays(dataEvents_test.transpose(),names='cens, time', formats = '?, <f8')
+
+        
+        
 
         cv_info.append(
             [train_data_features, train_data_times, train_data_statuses, train_instance_labels, train_group_labels, test_data_features,
