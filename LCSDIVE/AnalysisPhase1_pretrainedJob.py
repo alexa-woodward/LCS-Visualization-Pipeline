@@ -15,21 +15,24 @@ def job(experiment_path,cv):
     file.close()
 
     cv_info = phase1_pickle[0]
-    class_label = phase1_pickle[8]
-    data_headers = phase1_pickle[1][2]
-    model_path = phase1_pickle[12]
+    time_label = phase1_pickle[8]
+    status_label = phase1_pickle[9] 
+    data_headers = phase1_pickle[1][2] #might need to double check this
+    model_path = phase1_pickle[13]
 
     train_data_features = cv_info[cv][0]
-    train_data_phenotypes = cv_info[cv][1]
-    train_instance_labels = cv_info[cv][2]
-    train_group_labels = cv_info[cv][3]
-    test_data_features = cv_info[cv][4]
-    test_data_phenotypes = cv_info[cv][5]
-    test_instance_labels = cv_info[cv][6]
-    test_group_labels = cv_info[cv][7]
-    inst_label = cv_info[cv][8]
-    group_label = cv_info[cv][9]
-    cv_headers = cv_info[cv][10]
+    train_data_times = cv_info[cv][1]
+    train_data_statuses = cv_info[cv][2]
+    train_instance_labels = cv_info[cv][3]
+    train_group_labels = cv_info[cv][4]
+    test_data_features = cv_info[cv][5]
+    test_data_times = cv_info[cv][6]
+    test_data_statuses = cv_info[cv][7]
+    test_instance_labels = cv_info[cv][7]
+    test_group_labels = cv_info[cv][9]
+    inst_label = cv_info[cv][10]
+    group_label = cv_info[cv][11]
+    cv_headers = cv_info[cv][12]
 
     # Create CV directory
     if not os.path.exists(experiment_path + '/CV_' + str(cv)):
@@ -55,7 +58,8 @@ def job(experiment_path,cv):
 
     # Export Aggregate Testing Accuracy
     outfile = open(experiment_path + '/CV_' + str(cv) + '/testingAccuracy.txt', mode='w')
-    outfile.write(str(model.score(test_data_features, test_data_phenotypes)))
+    #need to use brier here
+    outfile.write(str(model.brier_score(test_data_features, test_data_phenotypes)))
     outfile.close()
 
     # Get AT Scores for each instance
