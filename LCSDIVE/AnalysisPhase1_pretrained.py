@@ -156,7 +156,8 @@ def main(argv):
             test_dfs[cv].set_index(['group', 'instance'], inplace=True)
             use_group_label = 'group'
             use_inst_label = 'instance'
-
+        
+        #Need this to drop both the eventTime and eventStatus columns. Is train_/test_data_phenotypes used again for anything?
         train_data_features = train_dfs[cv].drop(class_label, axis=1).values
         train_data_phenotypes = train_dfs[cv][class_label].values
         train_instance_labels = train_dfs[cv].index.get_level_values(use_inst_label).tolist()
