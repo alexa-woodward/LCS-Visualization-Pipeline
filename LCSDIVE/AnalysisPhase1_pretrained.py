@@ -174,10 +174,15 @@ def main(argv):
         cv_header_save = np.array(list(train_dfs[cv].drop(class_label, axis=1).columns))
         
         #still working on the next few lines
-        dataEvents = train_dfs[cv][[timeLabel,censorLabel]]
+        dataEvents_train = train_dfs[cv][[time_label,status_label]]
+        dataEvents_test = test_dfs[cv][[time_label,status_label]]
         
-        dataEvents[censorLabel] = dataEvents[censorLabel].astype(bool)
-        dataEvents = dataEvents.values
+        dataEvents_train[status_label] = dataEvents_train[status_label].astype(bool)
+        dataEvents_test[status_label] = dataEvents_test[status_label].astype(bool)
+        
+        dataEvents_train = dataEvents_train.values
+        dataEvents_test = dataEvents_test.values
+        
         dataEvents_train[:, [1, 0]] = dataEvents_train[:, [0, 1]]
         dataEvents_test[:, [1, 0]] = dataEvents_test[:, [0, 1]]
 
