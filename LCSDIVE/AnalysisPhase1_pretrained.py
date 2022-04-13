@@ -88,12 +88,12 @@ def main(argv):
     for i in range(cv_count):
         dataset_train = None
         dataset_test = None
-        for file in glob.glob(data_path+'/*_'+str(i)+'_Train.csv'):
-            dataset_train = pd.read_csv(file, sep=',')
+        for file in glob.glob(data_path+'/*_'+str(i)+'_Train.txt'):
+            dataset_train = pd.read_csv(file, sep='\t')
             dataset_train = dataset_train.loc[:, ~dataset_train.columns.str.contains('^Unnamed')]
             dataset_train = dataset_train.assign(group=np.ones(dataset_train.values.shape[0]))
-        for file in glob.glob(data_path+'/*_'+str(i)+'_Test.csv'):
-            dataset_test = pd.read_csv(file, sep=',')
+        for file in glob.glob(data_path+'/*_'+str(i)+'_Test.txt'):
+            dataset_test = pd.read_csv(file, sep='\t')
             dataset_test = dataset_test.loc[:, ~dataset_test.columns.str.contains('^Unnamed')]
             dataset_test = dataset_test.assign(group=np.ones(dataset_test.values.shape[0]))
 
