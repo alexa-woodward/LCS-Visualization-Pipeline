@@ -160,18 +160,18 @@ def main(argv):
             use_inst_label = 'instance'
         
         #Need this to drop both the eventTime and eventStatus columns. Is train_/test_data_phenotypes used again for anything?
-        train_data_features = train_dfs[cv].drop(class_label, axis=1).values
+        train_data_features = train_dfs[cv].drop([time_label,status_label], axis=1).values
         train_data_times = train_dfs[cv][time_label].values
         train_data_statuses = train_dfs[cv][status_label].values
         train_instance_labels = train_dfs[cv].index.get_level_values(use_inst_label).tolist()
         train_group_labels = train_dfs[cv].index.get_level_values(use_group_label).tolist()
 
-        test_data_features = test_dfs[cv].drop(class_label, axis=1).values
+        test_data_features = test_dfs[cv].drop([time_label,status_label], axis=1).values
         test_data_times = test_dfs[cv][time_label].values
         test_data_statuses = test_dfs[cv][status_label].values
         test_instance_labels = test_dfs[cv].index.get_level_values(use_inst_label).tolist()
         test_group_labels = test_dfs[cv].index.get_level_values(use_group_label).tolist()
-        cv_header_save = np.array(list(train_dfs[cv].drop(class_label, axis=1).columns))
+        cv_header_save = np.array(list(train_dfs[cv].drop([time_label,status_label], axis=1).columns))
         
         #still working on the next few lines
         dataEvents_train = train_dfs[cv][[time_label,status_label]]
@@ -202,7 +202,8 @@ def main(argv):
     for train_df in train_dfs:
         data_headers.extend(list(train_df.columns))
     data_headers = list(set(data_headers))
-    data_headers.remove(class_label)
+    data_headers.remove(time_label)
+    data_headers.remove(status_label)
     data_headers = np.array(data_headers)
 
     # Find Maximal Original Dataset
